@@ -1,5 +1,13 @@
 package helper
 
+import (
+	"encoding/json"
+	"fmt"
+	"strings"
+
+	"github.com/imroc/req/v3"
+)
+
 type BigOvenApi struct {
 	Context string `json:"@context"`
 	Type    string `json:"@type"`
@@ -42,4 +50,15 @@ type BigOvenApi struct {
 		Description  string   `json:"description"`
 		UploadDate   string   `json:"uploadDate"`
 	} `json:"video"`
+}
+
+func GetData(link string) BigOvenApi {
+	parsedData := BigOvenApi{}
+	res, _ := req.Get(link)
+	res_string, _ := res.ToString()
+	first_index := strings.Index(res_string, `<script type="application/ld+json">`) + 45
+	second_index := strings.Index(res_string[first_index:], `</script>`) - 1
+	json.Unmarshal([]byte(res_string[first_index:first_index+second_index]), &parsedData)
+	fmt.Println(parsedData.CookTime)
+	return parsedData
 }
