@@ -2,7 +2,6 @@ package helper
 
 import (
 	"encoding/json"
-	"fmt"
 	"strings"
 
 	"github.com/imroc/req/v3"
@@ -59,6 +58,19 @@ func GetData(link string) BigOvenApi {
 	first_index := strings.Index(res_string, `<script type="application/ld+json">`) + 45
 	second_index := strings.Index(res_string[first_index:], `</script>`) - 1
 	json.Unmarshal([]byte(res_string[first_index:first_index+second_index]), &parsedData)
-	fmt.Println(parsedData.CookTime)
 	return parsedData
+}
+
+func ParseSearch(link string) []string {
+	var allLinks []string
+	res, _ := req.Get(link)
+	res_string, _ := res.ToString()
+
+	for i := 0; i < 24; i++ {
+		first_index := strings.Index(res_string, `data-url="https://www.bigoven.com/recipe/`) + 10
+		second_index := strings.Index(res_string[first_index:], `"><div class="`)
+		allLinks = append(allLinks, res_string[first_index:first_index+second_index])
+		res_string = res_string[first_index+second_index:]
+	}
+	return allLinks
 }

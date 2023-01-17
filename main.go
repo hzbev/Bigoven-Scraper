@@ -8,6 +8,15 @@ import (
 // switch to yummly
 
 func main() {
-	parsed := helper.GetData("https://www.bigoven.com/recipe/frosted-strawberry-salad/502652")
-	fmt.Println(parsed.Description)
+	parsedLinks := helper.ParseSearch("https://www.bigoven.com/recipes/salad/dessert-and-gelatin/page/5")
+
+	for i := 0; i < len(parsedLinks); i++ {
+
+		parsed := helper.GetData(parsedLinks[i])
+		fmt.Println(parsed.RecipeInstructions, parsedLinks[i])
+		fmt.Println()
+
+	}
+
+	// fmt.Println(parsed.Image)
 }
